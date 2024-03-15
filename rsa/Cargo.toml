@@ -1,5 +1,5 @@
 [package]
-name = "rsa_demo"
+name = "rsa"
 version = "0.1.0"
 edition = "2021"
 
@@ -11,3 +11,7 @@ base64 = "0.22.0"
 rand = "0.8.5"
 openssl-sys = "0.9"
 openssl = "0.10"
+
+[[test]]
+name = "rsa_unittest"
+path = "src/rsa_unittest.rs"
