@@ -1,0 +1,3 @@
+[workspace]
+members = ["helle_word", "rsa"]
+resolver = "2"
