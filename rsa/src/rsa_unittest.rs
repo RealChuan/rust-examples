@@ -34,7 +34,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn rsa_test1() {
+    fn test_rsa_1() {
         let mut rng = rand::thread_rng();
         let bits = 2048;
         let priv_key = RsaPrivateKey::new(&mut rng, bits).expect("failed to generate a key");
@@ -54,7 +54,7 @@ mod tests {
     }
 
     #[test]
-    fn rsa_test2() {
+    fn test_rsa_2() {
         let priv_key = Rsa::generate(2048).unwrap();
         let p_key = PKey::from_rsa(priv_key).unwrap();
 
