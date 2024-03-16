@@ -1,0 +1,33 @@
+appenders:
+    stdout:
+        kind: console
+        encoder:
+            pattern: "[{d(%Y-%m-%d %H:%M:%S%.3f)} {h({l}):<5.5} {M} {T}] {m} - {f}:{L}{n}"
+        filters:
+            - kind: threshold
+              level: debug
+    file:
+        kind: file
+        path: "log/log.log"
+        encoder:
+            pattern: "[{d(%Y-%m-%d %H:%M:%S%.3f)} {h({l}):<5.5} {M} {T}] {m} - {f}:{L}{n}"
+    rollingfile:
+        kind: rolling_file
+        path: "log/rolling_log.log"
+        encoder:
+            pattern: "[{d(%Y-%m-%d %H:%M:%S%.3f)} {h({l}):<5.5} {M} {T}] {m} - {f}:{L}{n}"
+        policy:
+            trigger:
+                kind: time
+                interval: 1 hour
+            roller:
+                kind: fixed_window
+                pattern: "log/old-rolling_log_{}.log"
+                base: 0
+                count: 2
+root:
+    level: debug
+    appenders:
+        - stdout
+        - file
+        - rollingfile
