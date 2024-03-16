@@ -1,23 +1,14 @@
 name: Cargo build
 
 on: 
-  # push代码时触发workflow
   push:
-    paths-ignore: # 下列文件的变更不触发部署，可以自行添加
-        - '.github/workflows/clean_cache.yml'
-        - '.github/workflows/delete_workflow.yml'
-        - '.github/workflows/readme.yml'
-        - '.github/workflows/toolchain.yml'
+    paths-ignore:
         - 'doc/**'
         - '.gitignore'
         - 'LICENSE'
         - 'README*'
   pull_request:
-    paths-ignore: # 下列文件的变更不触发部署，可以自行添加
-        - '.github/workflows/clean_cache.yml'
-        - '.github/workflows/delete_workflow.yml'
-        - '.github/workflows/readme.yml'
-        - '.github/workflows/toolchain.yml'
+    paths-ignore:
         - 'doc/**'
         - '.gitignore'
         - 'LICENSE'
@@ -36,18 +27,33 @@ jobs:
           - ubuntu-latest
 
     steps:
-      - name: Restore windows vcpkg
-        if: startsWith(matrix.os, 'windows')
-        uses: actions/cache/restore@v3
+      - name: Install custom vcpkg
+        uses: RealChuan/install-vcpkg@main
+        with:
+          repo: 'https://github.com/RealChuan/vcpkg.git'
+          branch: 'dev'
+
+      - name: Cache windows vcpkg
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
         with: 
           path: C:\vcpkg\installed
-          key: ${{ runner.os }}-vcpkg-installed-${{ matrix.os }}
-      - name: Restore macos or ubuntu vcpkg
-        if: startsWith(matrix.os, 'macos') || startsWith(matrix.os, 'ubuntu')
-        uses: actions/cache/restore@v3
+          key: ${{ matrix.os }}-vcpkg-installed-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            ${{ matrix.os }}-vcpkg-installed-${{ runner.os }}-
+            ${{ matrix.os }}-vcpkg-installed-
+            ${{ matrix.os }}-
+
+      - name: Cache macos or linux vcpkg
+        if: runner.os == 'macOS' || runner.os == 'Linux'
+        uses: actions/cache@v4
         with: 
           path: /usr/local/share/vcpkg/installed
-          key: ${{ runner.os }}-vcpkg-installed-${{ matrix.os }}
+          key: ${{ matrix.os }}-vcpkg-installed-${{ runner.os }}-${{ github.sha }}
+          restore-keys: |
+            ${{ matrix.os }}-vcpkg-installed-${{ runner.os }}-
+            ${{ matrix.os }}-vcpkg-installed-
+            ${{ matrix.os }}-
               
       - name: Install dependencies on windows
         if: startsWith(matrix.os, 'windows')

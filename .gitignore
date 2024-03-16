@@ -16,3 +16,4 @@ Cargo.lock
 #other
 .vscode
 *.log
+uploads/

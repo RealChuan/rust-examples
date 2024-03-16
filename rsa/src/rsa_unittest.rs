@@ -80,7 +80,10 @@ mod tests {
         let datas: [&str; 2] = ["admin", "password."];
         for bits in bitss {
             for data in datas {
-                println!("bits: {}, data: {}", bits, data);
+                println!(
+                    "----------------bits: {}, data: {}----------------",
+                    bits, data
+                );
                 test_rsa_key(bits, data);
                 test_openssl_key(bits.try_into().unwrap(), data)
             }
