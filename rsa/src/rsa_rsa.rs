@@ -1,4 +1,4 @@
-use base64::engine::Engine;
+use base64ct::{Base64, Encoding};
 use rsa::{
     pkcs8::{DecodePrivateKey, DecodePublicKey},
     Pkcs1v15Encrypt, RsaPrivateKey, RsaPublicKey,
@@ -15,16 +15,13 @@ pub fn rsa_encrypt(public_key_pem: &str, message: &str) -> String {
         )
         .expect("Failed to encrypt message");
 
-    let base64_engine = base64::engine::general_purpose::STANDARD;
-    return base64_engine.encode(enc_data);
+    return Base64::encode_string(&enc_data);
 }
 
 pub fn rsa_decrypt(private_key_pem: &str, encrypted_data: &str) -> String {
     let private_key =
         RsaPrivateKey::from_pkcs8_pem(private_key_pem).expect("Failed to parse private key");
-    let enc_data = base64::engine::general_purpose::STANDARD
-        .decode(encrypted_data)
-        .expect("Failed to decode base64 data");
+    let enc_data = Base64::decode_vec(encrypted_data).expect("Failed to decode base64 data");
     let dec_data = private_key
         .decrypt(Pkcs1v15Encrypt, &enc_data)
         .expect("Failed to decrypt data");
